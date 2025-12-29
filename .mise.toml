@@ -1,0 +1,15 @@
+[tools]
+rust = "latest"
+"cargo:blue-build" = "latest"
+
+[tasks.build]
+run = "bluebuild build recipes/recipe.yml"
+
+[tasks.switch]
+run = "bluebuild switch recipes/recipe.yml"
+
+[tasks."howdy:shell"]
+run = "podman run --rm -it -v .:/src:Z fedora:43 bash"
+
+[tasks."howdy:build"]
+run = "podman run --rm -it -v .:/src:Z fedora:43 /src/modules/howdy/howdy.sh"

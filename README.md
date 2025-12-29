@@ -41,3 +41,25 @@ These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](ht
 ```bash
 cosign verify --key cosign.pub ghcr.io/atty303/bazzite-atty
 ```
+
+## Local Builds
+
+### Build
+
+If you don't care about the details of the template, you can run the `build` command.
+
+```bash
+mise run build
+```
+
+This will template out the file and build with `docker`, `podman`, or `buildah`.
+
+### Switch
+
+With the switch command, you can build and boot an image locally using an `oci-archive` tarball. The `switch` command can be run as a normal user and will only ask for `sudo` permissions when moving the archive into `/etc/bluebuild`.
+
+```bash
+mise run switch
+```
+
+You can initiate an immediate restart by adding the `--reboot/-r` option.

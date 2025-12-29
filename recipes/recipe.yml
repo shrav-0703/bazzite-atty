@@ -1,5 +1,6 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
 # image will be published to ghcr.io/<user>/<name>
 name: bazzite-atty
 # description will be included in the image's metadata
@@ -7,7 +8,15 @@ description: This is my personal OS image.
 
 # the base image to build on top of (FROM) and the version tag to use
 base-image: ghcr.io/ublue-os/bazzite-nvidia-open
-image-version: stable # latest is also supported if you want new updates ASAP
+image-version: stable
+
+stages:
+  - name: howdy
+    from: fedora:43
+    modules:
+      - type: script
+        scripts:
+          - howdy.sh
 
 # module configuration, executed in order
 # you can include multiple instances of the same module
@@ -16,18 +25,14 @@ modules:
     install:
       - 1password
 
-  - type: dnf
-    repos:
-      cleanup: true
-      copr:
-        - principis/howdy-beta
-    install:
-      packages:
-#        - https://kojipkgs.fedoraproject.org//packages/dlib/19.24.8/3.fc43/x86_64/dlib-19.24.8-3.fc43.x86_64.rpm
-#        - https://kojipkgs.fedoraproject.org//packages/dlib/19.24.8/3.fc43/x86_64/dlib-devel-19.24.8-3.fc43.x86_64.rpm
-#        - https://kojipkgs.fedoraproject.org//packages/dlib/19.24.8/3.fc43/x86_64/python3-dlib-19.24.8-3.fc43.x86_64.rpm
-        - howdy
-        - howdy-gtk
+  - type: containerfile
+    snippets:
+      - RUN mkdir -p /tmp/howdy
+      - COPY --from=howdy /root/rpmbuild/RPMS/noarch/*.rpm /tmp/howdy
+      - COPY --from=howdy /root/rpmbuild/RPMS/x86_64/*.rpm /tmp/howdy
+      - RUN ls -l /tmp/howdy
+      - RUN dnf install -y /tmp/howdy/*
+      - RUN rm -rf /tmp/howdy
 
   - type: files
     files:
