@@ -3,3 +3,4 @@ cosign.private
 /Containerfile
 /.idea/
 /.bluebuild-scripts_*
+/output
