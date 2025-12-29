@@ -16,6 +16,11 @@ modules:
     install:
       - 1password
 
+  - type: dnf
+    repos:
+      copr:
+        - principis/howdy
+
   - type: files
     files:
       - source: system
