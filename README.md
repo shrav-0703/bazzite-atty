@@ -1,8 +1,9 @@
 # bazzite-atty &nbsp; [![bluebuild build badge](https://github.com/atty303/bazzite-atty/actions/workflows/build.yml/badge.svg)](https://github.com/atty303/bazzite-atty/actions/workflows/build.yml)
 
-See the [BlueBuild docs](https://blue-build.org/how-to/setup/) for quick setup instructions for setting up your own repository based on this template.
+This is my personal Bazzite image for my personal use.
 
-After setup, it is recommended you update this README to describe your custom image.
+- 1Password: Flatpak/AppImage doesn't support browser, CLI and system authentication integrations.
+- Howdy: It is a PAM module. So it needs to be installed to the system.
 
 ## Installation
 
@@ -11,7 +12,7 @@ After setup, it is recommended you update this README to describe your custom im
 
 To rebase an existing atomic Fedora installation to the latest build:
 
-- First rebase to the unsigned image, to get the proper signing keys and policies installed:
+- First, rebase to the unsigned image to get the proper signing keys and policies installed:
   ```
   rpm-ostree rebase ostree-unverified-registry:ghcr.io/atty303/bazzite-atty:latest
   ```
