@@ -2,11 +2,95 @@
 rust = "latest"
 "cargo:blue-build" = "latest"
 
+[vars]
+image_name = "bazzite-atty"
+default_tag = "latest"
+bib_image = "quay.io/centos-bootc/bootc-image-builder:latest"
+
 [tasks.build]
 run = "bluebuild build recipes/recipe.yml"
 
 [tasks.switch]
 run = "bluebuild switch recipes/recipe.yml"
+
+[tasks.sudoif]
+run = """
+function sudoif(){
+    if [[ "${UID}" -eq 0 ]]; then
+        "$@"
+    elif [[ "$(command -v sudo)" && -n "${SSH_ASKPASS:-}" ]] && [[ -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ]]; then
+        /usr/bin/sudo --askpass "$@" || exit 1
+    elif [[ "$(command -v sudo)" ]]; then
+        /usr/bin/sudo "$@" || exit 1
+    else
+        exit 1
+    fi
+}
+sudoif {{arg(name='cmd')}} {{arg(name='args', var=true)}}
+"""
+hide = true
+
+[tasks.rootful-load-image]
+run = """
+target_image="{{option(name='image')}}"
+tag="{{option(name='tag')}}"
+
+# Check if already running as root or under sudo
+if [[ -n "${SUDO_USER:-}" || "${UID}" -eq "0" ]]; then
+    echo "Already root or running under sudo, no need to load image from user podman."
+    exit 0
+fi
+
+# Try to resolve the image tag using podman inspect
+set +e
+resolved_tag=$(podman inspect -t image "${target_image}:${tag}" | jq -r '.[].RepoTags.[0]')
+return_code=$?
+set -e
+
+USER_IMG_ID=$(podman images --filter reference="${target_image}:${tag}" --format "'{{ '{{.ID}}' }}'")
+
+if [[ $return_code -eq 0 ]]; then
+    # If the image is found, load it into rootful podman
+    ID=$(mise run sudoif podman images --filter reference="${target_image}:${tag}" --format "'{{ '{{.ID}}' }}'")
+    if [[ "$ID" != "$USER_IMG_ID" ]]; then
+        # If the image ID is not found or different from user, copy the image from user podman to root podman
+        COPYTMP=$(mktemp -p "${PWD}" -d -t _build_podman_scp.XXXXXXXXXX)
+        mise run sudoif TMPDIR=${COPYTMP} podman image scp ${UID}@localhost::"${target_image}:${tag}" root@localhost::"${target_image}:${tag}"
+        rm -rf "${COPYTMP}"
+    fi
+else
+    # If the image is not found, pull it from the repository
+    mise run sudoif podman pull "${target_image}:${tag}"
+fi
+"""
+
+[tasks.build-bib]
+run = """
+mkdir -p output
+sudo podman run \
+  --rm -it --privileged --pull=newer --net=host --security-opt label=type:unconfined_t \
+  -v ./{{option(name='config')}}:/config.toml:ro -v ./output:/output -v /var/lib/containers/storage:/var/lib/containers/storage \
+  "{{vars.bib_image}}" \
+  --type={{option(name='type')}} --use-librepo=True --rootfs=btrfs {{option(name='image')}}:{{option(name='tag')}}
+sudo chown $(id -u):$(id -g) output/disk.{{option(name='type')}}
+"""
+
+[tasks.rebulid-bib]
+run = [
+    "mise run build",
+    "mise run build-bib --image {{option(name='image',default=vars.image_name)}} --tag {{option(name='tag',default=vars.default_tag)}} --config {{option(name='config')}} --type {{option(name='type')}}",
+]
+
+[tasks."vm:build"]
+description = "Build a QCOW2 virtual machine image"
+run = [
+    "mise run rootful-load-image --image {{vars.image_name}} --tag {{vars.default_tag}}",
+    "mise run build-bib --image localhost/{{vars.image_name}} --tag {{vars.default_tag}} --config config.toml --type qcow2",
+]
+
+[tasks."vm:run"]
+description = "Run a QCOW2 virtual machine image"
+run = "qemu-system-x86_64 --enable-kvm -m 4096 -cpu host -smp 4 -drive file=./output/qcow2/disk.qcow2,if=virtio,format=qcow2 -device virtio-vga-gl -display gtk,gl=on"
 
 [tasks.bootc]
 run = [
@@ -17,6 +101,3 @@ run = [
     "sudo chown $(id -u):$(id -g) output/qcow2/disk.qcow2",
 ]
 env = { CONTAINER_IMAGE = "localhost/bazzite-atty:latest" }
-
-[tasks.qemu]
-run = "qemu-system-x86_64 --enable-kvm -m 4096 -cpu host -smp 4 -drive file=./output/qcow2/disk.qcow2,if=virtio,format=qcow2 -device virtio-vga-gl -display gtk,gl=on"
