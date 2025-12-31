@@ -4,6 +4,10 @@ This is my personal Bazzite image for my personal use.
 
 - 1Password: Flatpak/AppImage doesn't support browser, CLI and system authentication integrations.
 - Howdy: It is a PAM module. So it needs to be installed to the system.
+- DankMaterialShell(dms): It is a desktop environment.
+- greetd: It is a display manager. So it needs to be installed to the system.
+- dms-greeter: It is a display manager. So it needs to be installed to the system.
+- niri: Wayland compositor.
 
 ## Configuration
 
@@ -59,7 +63,7 @@ auth sufficient pam_howdy.so
 Switch to and apply the created profile.
 
 ```bash
-sudo authselect select custom/local with-silent-lastlog with-mdns4
+sudo authselect select custom/local with-silent-lastlog with-mdns4 with-howdy
 sudo authselect apply-changes
 ```
 
@@ -67,6 +71,16 @@ Test polkit authentication to confirm that face recognition works.
 
 ```bash
 pkexec id
+```
+
+### greetd
+
+Disable SDDM and enable greetd.
+
+```bash
+sudo touch /etc/greetd/niri.output.kdl
+sudo systemctl disable sddm
+sudo systemctl enable greetd
 ```
 
 ## Installation
