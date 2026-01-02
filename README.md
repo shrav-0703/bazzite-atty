@@ -60,6 +60,12 @@ Add `pam_howdy.so` before the line with `pam_fprintd.so` in `system-auth`.
 auth sufficient pam_howdy.so
 ```
 
+Install the SELinux policy module.
+
+```bash
+sudo semodule -i /usr/share/selinux/packages/howdy.pp
+```
+
 Switch to and apply the created profile.
 
 ```bash

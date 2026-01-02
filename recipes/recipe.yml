@@ -21,6 +21,7 @@ modules:
       copr:
         - solopasha/hyprland
         - avengemedia/dms
+        - scrollwm/packages
       files:
         - https://raw.githubusercontent.com/atty303/howdy-rpm/refs/heads/main/howdy.repo
     install:
@@ -32,6 +33,8 @@ modules:
         - howdy-selinux
         # solopasha/hyprland
         - uwsm
+        # scrollwm/packages
+        - scroll
         # avengemedia/dms
         - niri
         - dms
