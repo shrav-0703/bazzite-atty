@@ -46,6 +46,13 @@ modules:
       - source: system
         destination: /
 
+  - type: script
+    snippets:
+      # Activate DMS for Wayland sessions
+      # wayland-wm@<compositor>.service unit files are managed by uwsm
+      - ln -sf /usr/lib/systemd/user/dms.service /etc/systemd/user/wayland-wm@niri.service.wants/dms.service
+      - ln -sf /usr/lib/systemd/user/dms.service /etc/systemd/user/wayland-wm@scroll.service.wants/dms.service
+
 #  - type: systemd
 #    system:
 #      disabled:
